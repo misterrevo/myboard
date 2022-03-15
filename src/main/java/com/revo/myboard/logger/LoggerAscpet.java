@@ -54,8 +54,6 @@ public class LoggerAscpet {
                 .orElse(getRemoteAddr(request)!= null ? getRemoteAddr(request) : UNKNOWN_IP);
     }
 
-    //TEST
-
     private String getRemoteAddr(HttpServletRequest request){
         return request.getRemoteAddr();
     }

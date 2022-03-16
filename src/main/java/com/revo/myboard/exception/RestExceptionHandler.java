@@ -146,6 +146,18 @@ public class RestExceptionHandler {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(value = ImageSavingException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String objectNotExistsHandler(ImageSavingException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(value = ImageNotExistsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String objectNotExistsHandler(ImageNotExistsException exception) {
+        return exception.getMessage();
+    }
+
     @ExceptionHandler(value = SectionNotExistsException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String objectNotExistsHandler(SectionNotExistsException exception) {

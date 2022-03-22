@@ -1,6 +1,7 @@
 package com.revo.myboard.section;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revo.myboard.BaseIT;
 import com.revo.myboard.Utils;
 import com.revo.myboard.section.dto.NameDTO;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-
-@SpringBootTest
 @AutoConfigureMockMvc
-public class SectionControllerTest {
+public class SectionControllerTest extends BaseIT {
 
     private static final String SHOULD_GET_END_POINT = "/sections/1";
     private static final String THROW_NULL_END_POINT = "/sections/-1";

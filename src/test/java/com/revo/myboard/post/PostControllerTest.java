@@ -1,6 +1,7 @@
 package com.revo.myboard.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revo.myboard.BaseIT;
 import com.revo.myboard.Utils;
 import com.revo.myboard.post.dto.CreateDTO;
 import com.revo.myboard.post.dto.EditDTO;
@@ -12,9 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-public class PostControllerTest {
+public class PostControllerTest extends BaseIT {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 

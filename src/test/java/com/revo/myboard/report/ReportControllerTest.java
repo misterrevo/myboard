@@ -1,6 +1,7 @@
 package com.revo.myboard.report;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revo.myboard.BaseIT;
 import com.revo.myboard.Utils;
 import com.revo.myboard.report.dto.ContentDTO;
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-public class ReportControllerTest {
+public class ReportControllerTest extends BaseIT {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 

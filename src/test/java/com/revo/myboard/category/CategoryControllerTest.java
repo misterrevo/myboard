@@ -1,22 +1,21 @@
 package com.revo.myboard.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revo.myboard.BaseIT;
 import com.revo.myboard.Utils;
 import com.revo.myboard.category.dto.CreateDTO;
 import com.revo.myboard.category.dto.NameDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(roles = {"ADMIN"})
-public class CategoryControllerTest {
+public class CategoryControllerTest extends BaseIT {
 
     private static final String CREATE_END_POINT = "/categories";
     private static final String SHOULD_CREATE_NAME = "testCategory";

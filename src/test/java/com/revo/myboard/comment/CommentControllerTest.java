@@ -1,24 +1,19 @@
 package com.revo.myboard.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revo.myboard.BaseIT;
 import com.revo.myboard.Utils;
 import com.revo.myboard.comment.dto.ContentDTO;
 import com.revo.myboard.comment.dto.CreateDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-/*
- * Created By Revo
- */
-
-@SpringBootTest
 @AutoConfigureMockMvc
-public class CommentControllerTest {
+public class CommentControllerTest extends BaseIT {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 

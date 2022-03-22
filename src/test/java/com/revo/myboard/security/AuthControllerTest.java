@@ -1,6 +1,7 @@
 package com.revo.myboard.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revo.myboard.BaseIT;
 import com.revo.myboard.Utils;
 import com.revo.myboard.security.dto.CodeDTO;
 import com.revo.myboard.security.dto.CredentialsDTO;
@@ -15,9 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-public class AuthControllerTest {
+public class AuthControllerTest extends BaseIT {
 
     private static final String LOGIN_END_POINT = "/login";
     private static final String SHOULD_LOGIN_VALUE = "test";

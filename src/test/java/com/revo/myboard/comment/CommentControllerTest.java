@@ -41,6 +41,9 @@ public class CommentControllerTest {
 
     private static final String SHOULD_UNLIKE_END_POINT = "/comments/7/unlike";
     private static final String THROW_UNLIKE_END_POINT = "/comments/8/unlike";
+    private static final String ID_JSON_PATH = "$.id";
+    private static final String CONTENT_JSON_PATH = "$.content";
+    private static final String WHO_JSON_PATH = "$.who";
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,7 +54,7 @@ public class CommentControllerTest {
     void shouldGetComment() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(FIRST_COMMENT_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath(ID_JSON_PATH).value(1));
     }
 
     @Test
@@ -68,7 +71,7 @@ public class CommentControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(CREATE_END_POINT).header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper)).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_CREATE_CONTENT));
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_CREATE_CONTENT));
     }
 
     @Test
@@ -90,7 +93,7 @@ public class CommentControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(SHOULD_EDIT_END_POINT).header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper)).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_EDIT_CONTENT_USER));
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_EDIT_CONTENT_USER));
     }
 
     @Test
@@ -121,7 +124,7 @@ public class CommentControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(SHOULD_EDIT_END_POINT).header(AUTHORIZATION_HEADER, Utils.getTokenForModerator(mockMvc, objectMapper)).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_EDIT_CONTENT_MODERATOR));
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_EDIT_CONTENT_MODERATOR));
     }
 
     @Test
@@ -167,7 +170,7 @@ public class CommentControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(SHOULD_LIKE_END_POINT).header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper)))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.who").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath(WHO_JSON_PATH).exists());
     }
 
     @Test

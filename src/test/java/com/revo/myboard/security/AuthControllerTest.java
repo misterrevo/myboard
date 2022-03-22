@@ -42,6 +42,9 @@ public class AuthControllerTest {
     private static final String ADMIN_ROLE = "ADMIN";
     private static final String THROW_NULL_END_POINT_ADMIN = "/active/notExistsUser";
     private static final String THROW_INVALID_END_POINT_ADMIN = "/active/test";
+    private static final String LOGIN_JSON_PATH = "$.login";
+    private static final String EMAIL_JSON_PATH = "$.email";
+    private static final String ACTIVE_JSON_PATH = "$.active";
 
     @Autowired
     private MockMvc mockMvc;
@@ -80,8 +83,8 @@ public class AuthControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(REGISTER_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.login").value(SHOULD_REGISTER_VALUE))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(SHOULD_REGISTER_EMAIL));
+                .andExpect(MockMvcResultMatchers.jsonPath(LOGIN_JSON_PATH).value(SHOULD_REGISTER_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath(EMAIL_JSON_PATH).value(SHOULD_REGISTER_EMAIL));
     }
 
     @Test
@@ -134,7 +137,7 @@ public class AuthControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(ACTIVE_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.active").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath(ACTIVE_JSON_PATH).value(true));
     }
 
     @Test
@@ -162,7 +165,7 @@ public class AuthControllerTest {
     void shouldActiveUserAsAdmin() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch(ACTIVE_END_POINT_ADMIN))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.active").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath(ACTIVE_JSON_PATH).value(true));
     }
 
     @Test

@@ -47,6 +47,10 @@ public class GroupControllerTest {
     private static final String THROW_CHANGE_END_POINT = "/groups/-1/authority";
     private static final String SHOULD_CHANGE_NAME = "USER";
     private static final String THROW_CHANGE_NAME = "USERERROR";
+    private static final String EMPTY_JSON_PATH = "$";
+    private static final String ID_JSON_PATH = "$.id";
+    private static final String NAME_JSON_PATH = "$.name";
+    private static final String AUTHORITY_JSON_PATH = "$.authority";
 
     @Autowired
     private MockMvc mockMvc;
@@ -57,20 +61,20 @@ public class GroupControllerTest {
     void shouldGetAuthorities() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_AUTHORITIES_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath(EMPTY_JSON_PATH).exists());
     }
 
     @Test
     void shouldGetAllGroups() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_ALL_GROUPS_END_POINT)).andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath(EMPTY_JSON_PATH).exists());
     }
 
     @Test
     void shouldGetGroup() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_GROUP_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath(ID_JSON_PATH).value(1));
     }
 
     @Test
@@ -87,8 +91,8 @@ public class GroupControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(CREATE_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(SHOULD_CREATE_NAME))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.authority").value(SHOULD_CREATE_AUTHORITY));
+                .andExpect(MockMvcResultMatchers.jsonPath(NAME_JSON_PATH).value(SHOULD_CREATE_NAME))
+                .andExpect(MockMvcResultMatchers.jsonPath(AUTHORITY_JSON_PATH).value(SHOULD_CREATE_AUTHORITY));
     }
 
     @Test
@@ -122,7 +126,7 @@ public class GroupControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(SHOULD_RENAME_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(SHOULD_RENAME_NAME));
+                .andExpect(MockMvcResultMatchers.jsonPath(NAME_JSON_PATH).value(SHOULD_RENAME_NAME));
     }
 
     @Test
@@ -154,7 +158,7 @@ public class GroupControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(SHOULD_CHANGE_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.authority").value(SHOULD_CHANGE_NAME));
+                .andExpect(MockMvcResultMatchers.jsonPath(AUTHORITY_JSON_PATH).value(SHOULD_CHANGE_NAME));
     }
 
     @Test

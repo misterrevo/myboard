@@ -33,6 +33,8 @@ public class CategoryControllerTest {
     private static final String SHOULD_RENAME_NAME = "testRenameChanged";
     private static final String THROW_INVALID_RENAME_END_POINT = "/categories/4";
     private static final String THROW_RENAME_NAME = "testRename400";
+    private static final String NAME_JSON_PATH = "$.name";
+    private static final String ID_JSON_PATH = "$.id";
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,7 +50,7 @@ public class CategoryControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(CREATE_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(SHOULD_CREATE_NAME));
+                .andExpect(MockMvcResultMatchers.jsonPath(NAME_JSON_PATH).value(SHOULD_CREATE_NAME));
     }
 
     @Test
@@ -66,7 +68,7 @@ public class CategoryControllerTest {
     void shouldThrow404WhileCreating() throws Exception {
         var createDTO = new CreateDTO();
         createDTO.setName(THROW_CREATE_NAME);
-        createDTO.setSection(1);
+        createDTO.setSection(-1);
         String json = objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(createDTO);
         mockMvc.perform(
                         MockMvcRequestBuilders.post(CREATE_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
@@ -77,7 +79,7 @@ public class CategoryControllerTest {
     void shouldGetCategory() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath(ID_JSON_PATH).value(1));
     }
 
     @Test
@@ -105,7 +107,7 @@ public class CategoryControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(SHOULD_RENAME_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(SHOULD_RENAME_NAME));
+                .andExpect(MockMvcResultMatchers.jsonPath(NAME_JSON_PATH).value(SHOULD_RENAME_NAME));
     }
 
     @Test

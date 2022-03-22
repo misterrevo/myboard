@@ -49,6 +49,11 @@ public class PostControllerTest {
 
     private static final String SHOULD_UNLIKE_END_POINT = "/posts/7/unlike";
     private static final String THROW_UNLIKE_END_POINT = "/posts/8/unlike";
+    private static final String ID_JSON_PATH = "$.id";
+    private static final String ARRAY_TITLE_JSON_PATH = "$.[0].title";
+    private static final String TITLE_JSON_PATH = "$.title";
+    private static final String CONTENT_JSON_PATH = "$.content";
+    private static final String WHO_JSON_PATH = "$.who";
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,7 +64,7 @@ public class PostControllerTest {
     void shouldGetPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath(ID_JSON_PATH).value(1));
     }
 
     @Test
@@ -83,7 +88,7 @@ public class PostControllerTest {
     void shouldSearchPosts() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_SEARCH_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].title").value(SHOULD_SEARCH_TITLE));
+                .andExpect(MockMvcResultMatchers.jsonPath(ARRAY_TITLE_JSON_PATH).value(SHOULD_SEARCH_TITLE));
     }
 
     @Test
@@ -97,8 +102,8 @@ public class PostControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(SHOULD_CREATE_VALUE))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_CREATE_VALUE));
+                .andExpect(MockMvcResultMatchers.jsonPath(TITLE_JSON_PATH).value(SHOULD_CREATE_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_CREATE_VALUE));
     }
 
     @Test
@@ -161,8 +166,8 @@ public class PostControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(SHOULD_EDIT_TITLE_USER))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_EDIT_CONTENT));
+                .andExpect(MockMvcResultMatchers.jsonPath(TITLE_JSON_PATH).value(SHOULD_EDIT_TITLE_USER))
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_EDIT_CONTENT));
     }
 
     @Test
@@ -199,8 +204,8 @@ public class PostControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForModerator(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(SHOULD_EDIT_TITLE_MODERATOR))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_EDIT_CONTENT));
+                .andExpect(MockMvcResultMatchers.jsonPath(TITLE_JSON_PATH).value(SHOULD_EDIT_TITLE_MODERATOR))
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_EDIT_CONTENT));
     }
 
     @Test
@@ -231,7 +236,7 @@ public class PostControllerTest {
     void shouldGiveLike() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch(SHOULD_LIKE_END_POINT).header(AUTHORIZATION_HEADER,
                         Utils.getTokenForUser(mockMvc, objectMapper))).andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.who").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath(WHO_JSON_PATH).exists());
     }
 
     @Test

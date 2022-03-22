@@ -34,6 +34,8 @@ public class SectionControllerTest {
     private static final String SHOULD_RENAME_NAME = "testRenameChanged";
     private static final String THROW_INVALID_RENAME_NAME = "testRename400";
     private static final String THROW_NULL_RENAME_NAME = "testRename404";
+    private static final String ID_JSON_PATH = "$.id";
+    private static final String NAME_JSON_PATH = "$.name";
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,7 +46,7 @@ public class SectionControllerTest {
     void shouldGetSection() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath(ID_JSON_PATH).value(1));
     }
 
     @Test
@@ -66,7 +68,7 @@ public class SectionControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(CREATE_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(SHOULD_CREATE_NAME));
+                .andExpect(MockMvcResultMatchers.jsonPath(NAME_JSON_PATH).value(SHOULD_CREATE_NAME));
     }
 
     @Test
@@ -103,7 +105,7 @@ public class SectionControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.patch(SHOULD_RENAME_END_POINT).contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(SHOULD_RENAME_NAME));
+                .andExpect(MockMvcResultMatchers.jsonPath(NAME_JSON_PATH).value(SHOULD_RENAME_NAME));
     }
 
     @Test

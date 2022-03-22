@@ -1,5 +1,6 @@
 package com.revo.myboard.section;
 
+import com.revo.myboard.category.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,5 +30,5 @@ public class Section {
     private String name;
     @Builder.Default
     @OneToMany(mappedBy = "section", cascade = CascadeType.REMOVE)
-    private List<CategoryEntity> categories = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
 }

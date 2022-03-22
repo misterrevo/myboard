@@ -39,6 +39,10 @@ public class ReportControllerTest {
     private static final String GET_NOTCHECKED_END_POINT = "/reports/not-checked";
 
     private static final String SHOULD_DELETE_END_POINT = "/reports/3";
+    private static final String ID_JSON_PATH = "$.id";
+    private static final String CONTENT_JSON_PATH = "$.content";
+    private static final String CHECKED_JSON_PATH = "$.checked";
+    private static final String EMPTY_JSON_PATH = "$";
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,7 +53,7 @@ public class ReportControllerTest {
     void shouldGetReportAsUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_END_POINT).header(AUTHORIZATION_HEADER,
                         Utils.getTokenForUser(mockMvc, objectMapper))).andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(4));
+                .andExpect(MockMvcResultMatchers.jsonPath(ID_JSON_PATH).value(4));
     }
 
     @Test
@@ -62,7 +66,7 @@ public class ReportControllerTest {
     void shouldGetReportAsModerator() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_END_POINT).header(AUTHORIZATION_HEADER,
                         Utils.getTokenForModerator(mockMvc, objectMapper))).andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(4));
+                .andExpect(MockMvcResultMatchers.jsonPath(ID_JSON_PATH).value(4));
     }
 
     @Test
@@ -80,7 +84,7 @@ public class ReportControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_POST_CONTENT));
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_POST_CONTENT));
     }
 
     @Test
@@ -114,7 +118,7 @@ public class ReportControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(201))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(SHOULD_COMMENT_CONTENT));
+                .andExpect(MockMvcResultMatchers.jsonPath(CONTENT_JSON_PATH).value(SHOULD_COMMENT_CONTENT));
     }
 
     @Test
@@ -144,7 +148,7 @@ public class ReportControllerTest {
     void shouldSetCheckedReport() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch(FIRST_REPORT_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.checked").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath(CHECKED_JSON_PATH).value(true));
     }
 
     @Test
@@ -166,7 +170,7 @@ public class ReportControllerTest {
     void shouldGetAllNotChecked() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(GET_NOTCHECKED_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath(EMPTY_JSON_PATH).exists());
     }
 
     @Test

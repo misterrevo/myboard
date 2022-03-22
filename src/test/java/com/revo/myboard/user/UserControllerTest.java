@@ -66,6 +66,17 @@ public class UserControllerTest {
     private static final String THROW_NULL_G_SET_END_POINT = "/users/test/-1";
     private static final String THROW_NULL_U_SET_END_POINT = "/users/notexistsuser/1";
     private static final Object TOKEN_USER_LOGIN = "userToken";
+    private static final String LOGIN_JSON_PATH = "$.login";
+    private static final String ARRAY_LOGIN_JSON_PATH = "$.[0].login";
+    private static final String EMPTY_JSON_PATH = "$";
+    private static final String EMAIL_JSON_PATH = "$.email";
+    private static final String AGE_JSON_PATH = "$.data.age";
+    private static final String CITY_JSON_PATH = "$.data.city";
+    private static final String DESCRIPTION_JSON_PATH = "$.data.description";
+    private static final String PAGE_JSON_PATH = "$.data.page";
+    private static final String GENDER_JSON_PATH = "$.data.gender";
+    private static final String BLOCKED_JSON_PATH = "$.blocked";
+    private static final String GROUP_JSON_PATH = "$.group";
 
     @Autowired
     private MockMvc mockMvc;
@@ -76,7 +87,7 @@ public class UserControllerTest {
     void shouldGetUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_GET_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.login").value(SHOULD_SEARCH_LOGIN));
+                .andExpect(MockMvcResultMatchers.jsonPath(LOGIN_JSON_PATH).value(SHOULD_SEARCH_LOGIN));
     }
 
     @Test
@@ -88,7 +99,7 @@ public class UserControllerTest {
     void shouldSearchUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_SEARCH_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].login").value(SHOULD_SEARCH_LOGIN));
+                .andExpect(MockMvcResultMatchers.jsonPath(ARRAY_LOGIN_JSON_PATH).value(SHOULD_SEARCH_LOGIN));
     }
 
     @Test
@@ -100,7 +111,7 @@ public class UserControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForUserChangingPassword(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath(EMPTY_JSON_PATH).exists());
     }
 
     @Test
@@ -123,7 +134,7 @@ public class UserControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(SHOULD_EMAIL));
+                .andExpect(MockMvcResultMatchers.jsonPath(EMAIL_JSON_PATH).value(SHOULD_EMAIL));
     }
 
     @Test
@@ -145,11 +156,11 @@ public class UserControllerTest {
                         .header(AUTHORIZATION_HEADER, Utils.getTokenForUser(mockMvc, objectMapper))
                         .contentType(Utils.APPLICATION_JSON_UTF8).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.age").value(18))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.city").value(DATA_CITY))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.description").value(DATA_DESCRIPTION))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page").value(DATA_PAGE))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.gender").value(Gender.FEMALE.toString()));
+                .andExpect(MockMvcResultMatchers.jsonPath(AGE_JSON_PATH).value(18))
+                .andExpect(MockMvcResultMatchers.jsonPath(CITY_JSON_PATH).value(DATA_CITY))
+                .andExpect(MockMvcResultMatchers.jsonPath(DESCRIPTION_JSON_PATH).value(DATA_DESCRIPTION))
+                .andExpect(MockMvcResultMatchers.jsonPath(PAGE_JSON_PATH).value(DATA_PAGE))
+                .andExpect(MockMvcResultMatchers.jsonPath(GENDER_JSON_PATH).value(Gender.FEMALE.toString()));
     }
 
     @Test
@@ -166,7 +177,7 @@ public class UserControllerTest {
     void shouldGetProfile() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(SHOULD_PROFILE_END_POINT).header(AUTHORIZATION_HEADER,
                         Utils.getTokenForUser(mockMvc, objectMapper))).andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.login").value(TOKEN_USER_LOGIN));
+                .andExpect(MockMvcResultMatchers.jsonPath(LOGIN_JSON_PATH).value(TOKEN_USER_LOGIN));
     }
 
     @Test
@@ -205,7 +216,7 @@ public class UserControllerTest {
     void shouldGetSexList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(GET_SEXES_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath(EMPTY_JSON_PATH).exists());
     }
 
     @Test
@@ -213,7 +224,7 @@ public class UserControllerTest {
     void shouldBanUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch(SHOULD_BAN_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.blocked").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath(BLOCKED_JSON_PATH).value(true));
     }
 
     @Test
@@ -235,7 +246,7 @@ public class UserControllerTest {
     void shouldUnbanUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch(SHOULD_UNBAN_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.blocked").value(false));
+                .andExpect(MockMvcResultMatchers.jsonPath(BLOCKED_JSON_PATH).value(false));
     }
 
     @Test
@@ -257,8 +268,8 @@ public class UserControllerTest {
     void shouldSetUserGroup() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch(SHOULD_SET_END_POINT))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.login").value(SHOULD_SEARCH_LOGIN))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.group").value(TOKEN_USER_LOGIN));
+                .andExpect(MockMvcResultMatchers.jsonPath(LOGIN_JSON_PATH).value(SHOULD_SEARCH_LOGIN))
+                .andExpect(MockMvcResultMatchers.jsonPath(GROUP_JSON_PATH).value(TOKEN_USER_LOGIN));
     }
 
     @Test

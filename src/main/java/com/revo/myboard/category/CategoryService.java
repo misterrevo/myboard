@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @AllArgsConstructor
-class CategoryService implements CategoryServiceApi{
+class CategoryService implements CategoryServiceApi {
 
     private final CategoryRepository repository;
     private final SectionServiceApi sectionService;

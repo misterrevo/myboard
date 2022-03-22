@@ -1,9 +1,17 @@
 package com.revo.myboard.section;
 
-import com.revo.myboard.category.Category;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,5 +29,5 @@ public class Section {
     private String name;
     @Builder.Default
     @OneToMany(mappedBy = "section", cascade = CascadeType.REMOVE)
-    private List<Category> categories = new ArrayList<>();
+    private List<CategoryEntity> categories = new ArrayList<>();
 }

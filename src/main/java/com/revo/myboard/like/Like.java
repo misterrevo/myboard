@@ -7,14 +7,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
-/*
- * Created By Revo
- */
-
 @Entity
 @Table(name = "likes")
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,5 +27,4 @@ public class Like {
     @ManyToOne
     @JoinColumn(name = "who_id")
     private User who;
-
 }

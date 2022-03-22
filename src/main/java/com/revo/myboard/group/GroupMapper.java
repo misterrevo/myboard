@@ -2,10 +2,6 @@ package com.revo.myboard.group;
 
 import com.revo.myboard.group.dto.GroupDTO;
 
-/*
- * Created By Revo
- */
-
 public final class GroupMapper {
 
     public static GroupDTO mapFromGroup(Group group) {
@@ -13,11 +9,11 @@ public final class GroupMapper {
     }
 
     private static GroupDTO buildGroupDTO(Group group) {
+        var authority = group.getAuthority();
         return GroupDTO.builder()
                 .id(group.getId())
-                .authority(group.getAuthority().toString())
+                .authority(authority.toString())
                 .name(group.getName())
                 .build();
     }
-
 }

@@ -1,25 +1,20 @@
 package com.revo.myboard.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-/*
- * Created By Revo
- */
-
 @Embeddable
-@Getter
-@Setter
+@lombok.Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
-public class Data {
+class Data {
 
     @Type(type = "text")
     private String description;
@@ -28,5 +23,4 @@ public class Data {
     private String page;
     @Enumerated(EnumType.STRING)
     private Gender gender;
-
 }

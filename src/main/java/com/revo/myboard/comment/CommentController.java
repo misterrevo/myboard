@@ -15,31 +15,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
-/*
- *  Created By Revo
- */
-
 @RestController
 @RequestMapping("/comments")
 @Validated
 @AllArgsConstructor
-public class CommentController {
+class CommentController {
 
-    private static final String LOCATION = "/comments";
+    private static final String COMMENT_LOCATION = "/comments";
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final CommentService commentService;
 
     @GetMapping("/{id}")
     public ResponseEntity<CommentDTO> getCommentById(@PathVariable long id, HttpServletRequest request) {
-        return ResponseEntity.ok(commentService.getCommentDTOById(id));
+        var commentDTO = commentService.getCommentDTOById(id);
+        return ResponseEntity.ok(commentDTO);
     }
 
     @PostMapping()
     @ForUser
     public ResponseEntity<CommentDTO> createComment(@RequestHeader(AUTHORIZATION_HEADER) String token, @RequestBody @Valid CreateDTO createDTO,
                                            HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(commentService.createComment(token, createDTO.getPost(), createDTO.getContent()));
+        var commentDTO = commentService.createComment(token, createDTO);
+        return ResponseEntity.created(URI.create(COMMENT_LOCATION)).body(commentDTO);
     }
 
     @PatchMapping("/{id}")
@@ -58,19 +56,19 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping("/{id}/like")
+    @PatchMapping("/{id}/like")
     @ForUser
     public ResponseEntity<LikeDTO> giveLikeForCommentById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long id,
                                                           HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(commentService.giveLikeForCommentById(token, id));
+        var likeDTO = commentService.giveLikeForCommentById(token, id);
+        return ResponseEntity.ok(likeDTO);
     }
 
-    @DeleteMapping("/{id}/unlike")
+    @PatchMapping("/{id}/unlike")
     @ForUser
-    public ResponseEntity<Void> removeLikeFromCommentById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long id,
+    public ResponseEntity<LikeDTO> removeLikeFromCommentById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long id,
                                           HttpServletRequest request) {
-        commentService.removeLikeFromCommentById(token, id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var likeDTO = commentService.removeLikeFromCommentById(token, id);
+        return ResponseEntity.ok(likeDTO);
     }
-
 }

@@ -4,15 +4,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/*
- * Created By Revo
- */
-
-@Getter
-@Setter
+@Data
 @Builder
-@EqualsAndHashCode
-@ToString
 public class ShortPostDTO {
 
     private long id;
@@ -20,5 +13,4 @@ public class ShortPostDTO {
     private LocalDateTime lastActivity;
     private String author;
     private int answers;
-
 }

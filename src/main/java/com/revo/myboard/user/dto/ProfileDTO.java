@@ -8,11 +8,8 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
-@EqualsAndHashCode
-@ToString
 public class ProfileDTO {
 
     private String login;
@@ -24,5 +21,4 @@ public class ProfileDTO {
     private List<ProfileLikeDTO> liked;
     private String group;
     private DataDTO data;
-
 }

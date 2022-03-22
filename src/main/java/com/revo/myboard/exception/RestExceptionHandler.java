@@ -13,17 +13,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
-/*
- * Created By Revo
- */
-
 @RestControllerAdvice
 @Slf4j
-public class RestExceptionHandler {
+class RestExceptionHandler {
 
     private static final String EMAIL_SENDING_EXCEPTION = "Error while sending email, exception message: %s";
-    private static final String NULL_POINTER_EXCEPTION = "%s not found!";
-    private static final String ILLEGAL_ARGUMENT_EXCEPTION = "%s is illegal argument!";
 
     @ExceptionHandler(value = MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -118,7 +112,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(value = IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String illegalArgumentHandler(IllegalArgumentException exception) {
-        return ILLEGAL_ARGUMENT_EXCEPTION.formatted(exception.getMessage());
+        return exception.getMessage();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -203,7 +197,12 @@ public class RestExceptionHandler {
     @ExceptionHandler(value = NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String nullPointerExceptionHandler(NullPointerException exception) {
-        return NULL_POINTER_EXCEPTION.formatted(exception.getMessage());
+        return exception.getMessage();
     }
 
+    @ExceptionHandler(value = LoadingImageException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String internalErrorHandler(LoadingImageException exception) {
+        return exception.getMessage();
+    }
 }

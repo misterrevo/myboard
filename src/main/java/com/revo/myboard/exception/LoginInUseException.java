@@ -1,9 +1,5 @@
 package com.revo.myboard.exception;
 
-/*
- * Created By Revo
- */
-
 public class LoginInUseException extends RuntimeException {
 
     private static final String MESSAGE = "Error while creating user, probably user with login %s exists in base!";
@@ -11,5 +7,4 @@ public class LoginInUseException extends RuntimeException {
     public LoginInUseException(String value) {
         super(MESSAGE.formatted(value));
     }
-
 }

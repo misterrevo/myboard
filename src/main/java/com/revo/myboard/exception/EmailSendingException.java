@@ -1,9 +1,5 @@
 package com.revo.myboard.exception;
 
-/*
- * Created By Revo
- */
-
 public class EmailSendingException extends RuntimeException {
 
     private static final String EXCEPTION_MESSAGE = "Server has problems while sending email to %s, error message: %s";
@@ -11,5 +7,4 @@ public class EmailSendingException extends RuntimeException {
     public EmailSendingException(String email, String message) {
         super(EXCEPTION_MESSAGE.formatted(email, message));
     }
-
 }

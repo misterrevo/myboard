@@ -8,15 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-/*
- * Created By Revo
- */
 
 @Service
 @AllArgsConstructor
-public class SectionService {
+class SectionService implements SectionServiceApi{
 
     private final SectionRepository repository;
 
@@ -29,7 +24,9 @@ public class SectionService {
     }
 
     private Section buildSection(String name){
-        return Section.builder().name(name).build();
+        return Section.builder()
+                .name(name)
+                .build();
     }
 
     private boolean existsByName(String name){
@@ -44,8 +41,10 @@ public class SectionService {
         repository.delete(getSectionById(id));
     }
 
+    @Override
     public Section getSectionById(long id) {
-        return repository.findById(id).orElseThrow(() -> new SectionNotExistsException(id));
+        return repository.findById(id)
+                .orElseThrow(() -> new SectionNotExistsException(id));
     }
 
     SectionDTO getSectionDTOById(long id) {
@@ -72,7 +71,8 @@ public class SectionService {
     }
 
     private List<SectionDTO> mapFromList(List<Section> sections){
-        return sections.stream().map(this::mapFromSection).collect(Collectors.toList());
+        return sections.stream()
+                .map(this::mapFromSection)
+                .toList();
     }
-
 }

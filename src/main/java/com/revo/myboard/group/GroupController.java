@@ -13,39 +13,39 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
 @RestController
 @RequestMapping("/groups")
 @ForAdmin
 @Validated
 @AllArgsConstructor
-public class GroupController {
+class GroupController {
 
-    private static final String LOCATION = "/groups";
+    private static final String GROUP_LOCATION = "/groups";
 
     private final GroupService groupService;
 
     @GetMapping()
     public ResponseEntity<List<GroupDTO>> getAllGroups(HttpServletRequest request) {
-        return ResponseEntity.ok(groupService.getAllGroups());
+        var groupsDTO = groupService.getAllGroups();
+        return ResponseEntity.ok(groupsDTO);
     }
 
     @GetMapping("/roles")
     public ResponseEntity<List<String>> getAuthoritiesList(HttpServletRequest request) {
-        return ResponseEntity.ok(groupService.getAuthorityList());
+        var authorityList = groupService.getAuthorityList();
+        return ResponseEntity.ok(authorityList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GroupDTO> getGroupById(@PathVariable long id, HttpServletRequest request) {
-        return ResponseEntity.ok(groupService.getGroupDTOById(id));
+        var groupDTO = groupService.getGroupDTOById(id);
+        return ResponseEntity.ok(groupDTO);
     }
 
     @PostMapping()
     public ResponseEntity<GroupDTO> createGroup(@RequestBody @Valid CreateDTO createDTO, HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(groupService.createGroup(createDTO.getName(), createDTO.getAuthority()));
+        var groupDTO = groupService.createGroup(createDTO);
+        return ResponseEntity.created(URI.create(GROUP_LOCATION)).body(groupDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -67,5 +67,4 @@ public class GroupController {
         var groupDTO = groupService.changeGroupAuthority(id, editAuthorityDTO.getNewAuthority());
         return ResponseEntity.ok(groupDTO);
     }
-
 }

@@ -9,15 +9,11 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
 @Entity
-@Getter
-@Setter
+@lombok.Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,20 +29,23 @@ public final class User {
     private String email;
     private boolean blocked;
     private boolean active;
+    @Builder.Default
     @OneToMany(mappedBy = "author")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "author")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
+    @Builder.Default
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "reporter")
-    private List<Report> reports;
+    private List<Report> reports = new ArrayList<>();
     @Embedded
     private Data data;
+    @Builder.Default
     @OneToMany(mappedBy = "who", cascade = CascadeType.REMOVE)
-    private List<Like> liked;
+    private List<Like> liked = new ArrayList<>();
     @OneToOne
     @JoinColumn(referencedColumnName = "id", name = "group_id")
     private Group group;
     private String code;
     public LocalDateTime lastActivityDate;
-
 }

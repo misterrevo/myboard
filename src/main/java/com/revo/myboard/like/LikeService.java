@@ -1,15 +1,15 @@
 package com.revo.myboard.like;
 
 import com.revo.myboard.comment.Comment;
-import com.revo.myboard.comment.CommentService;
+import com.revo.myboard.comment.CommentServiceApi;
 import com.revo.myboard.exception.CommentNotExistsException;
 import com.revo.myboard.exception.HasLikeBeforeException;
 import com.revo.myboard.exception.PostNotExistsException;
 import com.revo.myboard.like.dto.LikeDTO;
 import com.revo.myboard.post.Post;
-import com.revo.myboard.post.PostService;
+import com.revo.myboard.post.PostServiceApi;
 import com.revo.myboard.user.User;
-import com.revo.myboard.user.UserService;
+import com.revo.myboard.user.UserServiceApi;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -17,28 +17,34 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
-/*
- * Created By Revo
- */
-
 @Service
 @Transactional
 @AllArgsConstructor(onConstructor = @__(@Lazy))
-public class LikeService {
+class LikeService implements LikeServiceApi{
 
     private final LikeRepository repository;
-    private final UserService userService;
-    private final PostService postService;
-    private final CommentService commentService;
+    private final UserServiceApi userService;
+    private final PostServiceApi postService;
+    private final CommentServiceApi commentService;
 
+    @Override
     public LikeDTO giveForPostById(String token, long post_id) {
         var user = getUser(token);
         var post = getPost(post_id);
-        if (post.getMyLikes().stream().anyMatch(like -> like.getWho().equals(user))) {
+        if (hasLikeInPost(user, post)) {
             throw new HasLikeBeforeException(post_id);
         }
         var like = repository.save(buildForPost(user, post));
         return mapFromLike(like);
+    }
+
+    private boolean hasLikeInPost(User user, Post post) {
+        return post.getMyLikes().stream()
+                .anyMatch(like -> isOwnerOfLike(like, user));
+    }
+
+    private boolean isOwnerOfLike(Like like, User user) {
+        return Objects.equals(like.getWho(), user);
     }
 
     private Like buildForPost(User user, Post post){
@@ -57,14 +63,20 @@ public class LikeService {
         return LikeMapper.mapLikeDTOFromLike(like);
     }
 
+    @Override
     public LikeDTO giveForCommentById(String token, long comment_id) {
         var user = getUser(token);
         var comment = getComment(comment_id);
-        if (comment.getMyLikes().stream().anyMatch(like -> like.getWho().equals(user))) {
+        if (hasLikeInComment(comment, user)) {
             throw new HasLikeBeforeException(comment_id);
         }
         var like = repository.save(buildForComment(user, comment));
         return mapFromLike(like);
+    }
+
+    private boolean hasLikeInComment(Comment comment, User user) {
+        return comment.getMyLikes().stream()
+                .anyMatch(like -> isOwnerOfLike(like, user));
     }
 
     private Comment getComment(long id){
@@ -72,29 +84,43 @@ public class LikeService {
     }
 
     private Like buildForComment(User user, Comment comment){
-        return Like.builder().who(user).comment(comment).build();
+        return Like.builder()
+                .who(user)
+                .comment(comment)
+                .build();
     }
 
-    public void removeFromPostById(String token, long id) {
-        if (getPost(id).getMyLikes().stream().noneMatch(like -> Objects.equals(like.getWho(), getUser(token)))) {
+    @Override
+    public LikeDTO removeFromPostById(String token, long id) {
+        if (!hasLikeInPost(getUser(token), getPost(id))) {
             throw new PostNotExistsException(id);
         }
-        repository.delete(getLikeFromPost(token, id));
+        var like = getLikeFromPost(token, id);
+        repository.delete(like);
+        return mapFromLike(like);
     }
 
     private Like getLikeFromPost(String token, long id){
-        return getPost(id).getMyLikes().stream().filter(like -> Objects.equals(like.getWho(), getUser(token))).findFirst().get();
+        return getPost(id).getMyLikes().stream()
+                .filter(like -> isOwnerOfLike(like, getUser(token)))
+                .findFirst()
+                .orElseThrow(() -> new PostNotExistsException(id));
     }
 
-    public void removeFromCommentById(String token, long id) {
-        if (getComment(id).getMyLikes().stream().noneMatch(like -> Objects.equals(like.getWho(), getUser(token)))) {
+    @Override
+    public LikeDTO removeFromCommentById(String token, long id) {
+        if (!hasLikeInComment(getComment(id), getUser(token))) {
             throw new CommentNotExistsException(id);
         }
-        repository.delete(getLikeFromComment(token, id));
+        var like = getLikeFromComment(token, id);
+        repository.delete(like);
+        return mapFromLike(like);
     }
 
     private Like getLikeFromComment(String token, long id){
-        return getComment(id).getMyLikes().stream().filter(like -> Objects.equals(like.getWho(), getUser(token))).findFirst().get();
+        return getComment(id).getMyLikes().stream()
+                .filter(like -> isOwnerOfLike(like, getUser(token)))
+                .findFirst()
+                .orElseThrow(() -> new CommentNotExistsException(id));
     }
-
 }

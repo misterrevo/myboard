@@ -8,10 +8,6 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.Properties;
 
-/*
- * Created By Revo
- */
-
 @Service
 public class EmailService {
 
@@ -63,9 +59,7 @@ public class EmailService {
 
     private MimeBodyPart getMimeBodyPart(String code) throws Exception{
         var mimeBodyPart = new MimeBodyPart();
-        mimeBodyPart.setContent(CONTENT.formatted(code),
-                TYPE);
+        mimeBodyPart.setContent(CONTENT.formatted(code), TYPE);
         return mimeBodyPart;
     }
-
 }

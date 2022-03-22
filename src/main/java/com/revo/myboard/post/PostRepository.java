@@ -7,12 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/*
- * Created By Revo
- */
-
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByOrderByLastActiveDateDesc(Pageable pageable);
 
@@ -23,5 +19,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     boolean existsByTitle(String title);
 
     List<Post> findByTitleContaining(String title);
-
 }

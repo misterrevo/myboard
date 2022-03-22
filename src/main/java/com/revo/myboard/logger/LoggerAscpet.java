@@ -15,14 +15,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-/*
- * Created By Revo
- */
-
 @Aspect
 @Component
 @Slf4j
-public class LoggerAscpet {
+class LoggerAscpet {
 
     private static final String UNKNOWN_IP = "unknown";
     private static final String ARGUMENT = "Type: %s | Value: %s";

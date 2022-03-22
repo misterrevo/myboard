@@ -13,34 +13,33 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-/*
- *  Created By Revo
- */
-
 @RestController
 @RequestMapping("/sections")
 @Validated
 @AllArgsConstructor
-public class SectionController {
+class SectionController {
 
-    private static final String LOCATION = "/sections";
+    private static final String SECTION_LOCATION = "/sections";
 
     private final SectionService serverService;
 
     @GetMapping("/{id}")
     public ResponseEntity<SectionDTO> getSectionById(@PathVariable long id, HttpServletRequest request) {
-        return ResponseEntity.ok(serverService.getSectionDTOById(id));
+        var sectionDTO = serverService.getSectionDTOById(id);
+        return ResponseEntity.ok(sectionDTO);
     }
 
     @GetMapping()
     public ResponseEntity<List<SectionDTO>> getAllSections(HttpServletRequest request) {
-        return ResponseEntity.ok(serverService.getAllSections());
+        var sectionsDTO = serverService.getAllSections();
+        return ResponseEntity.ok(sectionsDTO);
     }
 
     @PostMapping()
     @ForAdmin
     public ResponseEntity<SectionDTO> createSection(@RequestBody @Valid NameDTO createDTO, HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(serverService.createSection(createDTO.getName()));
+        var sectionDTO = serverService.createSection(createDTO.getName());
+        return ResponseEntity.created(URI.create(SECTION_LOCATION)).body(sectionDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -56,5 +55,4 @@ public class SectionController {
         var sectionDTO = serverService.renameSectionById(id, nameDTO.getName());
         return ResponseEntity.ok(sectionDTO);
     }
-
 }

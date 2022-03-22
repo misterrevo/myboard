@@ -15,15 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
 @RestController
 @RequestMapping("/users")
 @Validated
 @RequiredArgsConstructor
-public class UserController {
+class UserController {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -33,12 +29,14 @@ public class UserController {
 
     @GetMapping("/{login}")
     public ResponseEntity<UserDTO> getUserByLogin(@PathVariable String login, HttpServletRequest request) {
-        return ResponseEntity.ok(userService.getUserDTOByLogin(login));
+        var userDTO = userService.getUserDTOByLogin(login);
+        return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping("/{login}/search")
-    public ResponseEntity<List<SearchDTO>> getUsersByContent(@PathVariable String login, HttpServletRequest request) {
-        return ResponseEntity.ok(userService.searchUsersByLogin(login));
+    @GetMapping()
+    public ResponseEntity<List<SearchDTO>> getUsersByContent(@RequestParam String login, HttpServletRequest request) {
+        var searchesDTO = userService.searchUsersByLogin(login);
+        return ResponseEntity.ok(searchesDTO);
     }
 
     @PatchMapping("/password-reset")
@@ -61,16 +59,16 @@ public class UserController {
     @ForUser
     public ResponseEntity<UserDTO> changeUserData(@RequestHeader(AUTHORIZATION_HEADER) String token, @RequestBody @Valid DataDTO dataDTO,
                                HttpServletRequest request) {
-        var userDTO = userService.changeUserData(token, dataDTO.getDescription(), dataDTO.getAge(), dataDTO.getCity(),
-                dataDTO.getPage(), dataDTO.getGender());
+        var userDTO = userService.changeUserData(token, dataDTO);
         return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping()
+    @GetMapping("/profile")
     @ForUser
     public ResponseEntity<ProfileDTO> currentLoggedUserProfile(@RequestHeader(AUTHORIZATION_HEADER) String token,
                                                                HttpServletRequest request) {
-        return ResponseEntity.ok(userService.currentLoggedUserProfileDTO(token));
+        var profileDTO = userService.currentLoggedUserProfileDTO(token);
+        return ResponseEntity.ok(profileDTO);
     }
 
     @DeleteMapping("/{login}")
@@ -82,8 +80,9 @@ public class UserController {
 
     @GetMapping("/genders")
     @ForUser
-    public ResponseEntity<List<String>> getSexList(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.getSexList());
+    public ResponseEntity<List<String>> getGenderList(HttpServletRequest request) {
+        var genders = userService.getGenderList();
+        return ResponseEntity.ok(genders);
     }
 
     @PatchMapping("/{login}/ban")
@@ -106,5 +105,4 @@ public class UserController {
         var userDTO = userService.setGroupByLogin(login, group_id);
         return ResponseEntity.ok(userDTO);
     }
-
 }

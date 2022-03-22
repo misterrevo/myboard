@@ -1,20 +1,12 @@
 package com.revo.myboard.category.dto;
 
-import com.revo.myboard.category.Category;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
-/*
- * Created By Revo
- */
-
-@Getter
-@Setter
+@Data
 @Builder
-@EqualsAndHashCode
-@ToString
 public class ShortCategoryDTO {
 
     private long id;
     private String name;
-
 }

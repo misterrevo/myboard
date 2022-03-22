@@ -1,9 +1,5 @@
 package com.revo.myboard.like;
 
-/*
- * Created By Revo
- */
-
 import com.revo.myboard.like.dto.LikeDTO;
 import com.revo.myboard.like.dto.ProfileLikeDTO;
 
@@ -18,18 +14,22 @@ public class LikeMapper {
     }
 
     private static ProfileLikeDTO buildForCommentAsProfile(Like like){
+        var comment = like.getComment();
+        var who = like.getWho();
         return ProfileLikeDTO.builder()
-                .comment(like.getComment().getId())
-                .who(like.getWho().getLogin())
+                .comment(comment.getId())
+                .who(who.getLogin())
                 .build();
     }
 
     private static ProfileLikeDTO buildForPostAsProfile(Like like){
+        var post = like.getPost();
+        var who = like.getWho();
         return ProfileLikeDTO.builder()
-                .post(like.getPost().getId())
-                .who(like.getWho().getLogin())
-                .postTitle(like.getPost().getTitle())
-                .lastActivity(like.getPost().getLastActiveDate())
+                .post(post.getId())
+                .who(who.getLogin())
+                .postTitle(post.getTitle())
+                .lastActivity(post.getLastActiveDate())
                 .build();
     }
 
@@ -42,13 +42,20 @@ public class LikeMapper {
     }
 
     private static LikeDTO buildForComment(Like like){
-        return LikeDTO.builder().comment(like.getComment().getId())
-                .who(like.getWho().getLogin()).build();
+        var comment = like.getComment();
+        var who = like.getWho();
+        return LikeDTO.builder()
+                .comment(comment.getId())
+                .who(who.getLogin())
+                .build();
     }
 
     private static LikeDTO buildForPost(Like like){
-        return LikeDTO.builder().post(like.getPost().getId())
-                .who(like.getWho().getLogin()).build();
+        var post = like.getPost();
+        var who = like.getWho();
+        return LikeDTO.builder()
+                .post(post.getId())
+                .who(who.getLogin())
+                .build();
     }
-
 }

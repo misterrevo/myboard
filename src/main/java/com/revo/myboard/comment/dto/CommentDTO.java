@@ -7,15 +7,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
-@Getter
-@Setter
 @Builder
-@EqualsAndHashCode
-@ToString
+@Data
 public class CommentDTO {
 
     private long id;
@@ -26,5 +19,4 @@ public class CommentDTO {
     private List<ReportDTO> reports;
     private long post;
     private List<LikeDTO> likes;
-
 }

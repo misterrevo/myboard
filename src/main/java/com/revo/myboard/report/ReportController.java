@@ -16,17 +16,13 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-/*
- *  Created By Revo
- */
-
 @RestController
 @RequestMapping("/reports")
 @Validated
 @AllArgsConstructor
-public class ReportController {
+class ReportController {
 
-    private static final String LOCATION = "/reports";
+    private static final String REPORT_LOCATION = "/reports";
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final ReportService reportService;
@@ -34,19 +30,22 @@ public class ReportController {
     @GetMapping("/{id}")
     @ForUser
     public ResponseEntity<ReportDTO> getReportById(@PathVariable long id, @RequestHeader(AUTHORIZATION_HEADER) String token, HttpServletRequest request) {
-        return ResponseEntity.ok(reportService.getReportDTOById(token, id));
+        var reportDTO = reportService.getReportDTOById(token, id);
+        return ResponseEntity.ok(reportDTO);
     }
 
-    @PostMapping("/post/{post_id}")
+    @PostMapping("/posts/{post_id}")
     @ForUser
     public ResponseEntity<ReportDTO> postReportById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long post_id, @RequestBody @Valid ContentDTO contentDTO, HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(reportService.createReportForPost(token, post_id, contentDTO.getContent()));
+        var reportDTO = reportService.createReportForPost(token, post_id, contentDTO.getContent());
+        return ResponseEntity.created(URI.create(REPORT_LOCATION)).body(reportDTO);
     }
 
-    @PostMapping("/comment/{comment_id}")
+    @PostMapping("/comments/{comment_id}")
     @ForUser
     public ResponseEntity<ReportDTO> commentReportById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long comment_id, @RequestBody @Valid ContentDTO contentDTO, HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(reportService.createReportForComment(token, comment_id, contentDTO.getContent()));
+        var reportDTO = reportService.createReportForComment(token, comment_id, contentDTO.getContent());
+        return ResponseEntity.created(URI.create(REPORT_LOCATION)).body(reportDTO);
     }
 
     @PatchMapping("/{id}")
@@ -59,7 +58,8 @@ public class ReportController {
     @GetMapping("/not-checked")
     @ForModerator
     public ResponseEntity<List<ReportDTO>> getAllNotCheckedReports(HttpServletRequest request) {
-        return ResponseEntity.ok(reportService.getAllNotCheckedReports());
+        var reportsDTO = reportService.getAllNotCheckedReports();
+        return ResponseEntity.ok(reportsDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -68,5 +68,4 @@ public class ReportController {
         reportService.deleteReportById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }

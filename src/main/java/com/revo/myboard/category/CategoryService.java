@@ -1,27 +1,26 @@
 package com.revo.myboard.category;
 
 import com.revo.myboard.category.dto.CategoryDTO;
+import com.revo.myboard.category.dto.CreateDTO;
 import com.revo.myboard.exception.CategoryNameInUseException;
 import com.revo.myboard.exception.CategoryNotExistsException;
 import com.revo.myboard.section.Section;
-import com.revo.myboard.section.SectionService;
+import com.revo.myboard.section.SectionServiceApi;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/*
- * Created By Revo
- */
-
 @Service
 @Transactional
 @AllArgsConstructor
-public class CategoryService {
+class CategoryService implements CategoryServiceApi{
 
     private final CategoryRepository repository;
-    private final SectionService sectionService;
+    private final SectionServiceApi sectionService;
 
-    CategoryDTO createCategory(String name, long section_id) {
+    CategoryDTO createCategory(CreateDTO createDTO) {
+        var name = createDTO.getName();
+        var section_id = createDTO.getSection();
         if(existsByName(name)){
             throw new CategoryNameInUseException(name);
         }
@@ -40,7 +39,10 @@ public class CategoryService {
     }
 
     private Category buildCategory(String name, Section section){
-        return Category.builder().name(name).section(section).build();
+        return Category.builder()
+                .name(name)
+                .section(section)
+                .build();
     }
 
     private Section getSection(long id){
@@ -53,10 +55,10 @@ public class CategoryService {
 
     CategoryDTO getCategoryDTOById(long id) {
         var category = getCategoryById(id);
-        var categoryDTO = mapCategory(category);
-        return categoryDTO;
+        return mapCategory(category);
     }
 
+    @Override
     public Category getCategoryById(long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new CategoryNotExistsException(id));
@@ -68,8 +70,6 @@ public class CategoryService {
         }
         var category = getCategoryById(id);
         category.setName(new_name);
-        var categoryDTO = mapCategory(category);
-        return categoryDTO;
+        return mapCategory(category);
     }
-
 }

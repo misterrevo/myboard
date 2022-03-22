@@ -4,15 +4,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/*
- * Created By Revo
- */
-
-@Getter
-@Setter
+@Data
 @Builder
-@EqualsAndHashCode
-@ToString
 public class ReportDTO {
 
     private long id;
@@ -23,5 +16,4 @@ public class ReportDTO {
     private LocalDateTime date;
     private boolean checked;
     private String content;
-
 }

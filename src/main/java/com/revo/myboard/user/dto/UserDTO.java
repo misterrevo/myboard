@@ -5,15 +5,8 @@ import lombok.*;
 
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
-@Getter
-@Setter
+@Data
 @Builder
-@EqualsAndHashCode
-@ToString
 public class UserDTO {
 
     private String login;
@@ -23,5 +16,4 @@ public class UserDTO {
     private List<ShortPostDTO> posts;
     private boolean blocked;
     private boolean active;
-
 }

@@ -13,13 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/*
- * Created By Revo
- */
-
 @Component
 @AllArgsConstructor(onConstructor = @__(@Lazy))
-public class AuthManager implements AuthenticationManager {
+class AuthManager implements AuthenticationManager {
 
     private static final String MISS_AUTH_PARAMS = "You miss authentiaction params!";
     private static final String PASSWORD_NOT_MATCH = "Password not match!";
@@ -49,5 +45,4 @@ public class AuthManager implements AuthenticationManager {
     private UserDetails loadUser(Authentication authentication){
         return userDetailsService.loadUserByUsername(authentication.getPrincipal().toString());
     }
-
 }

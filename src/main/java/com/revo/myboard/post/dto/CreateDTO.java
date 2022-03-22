@@ -1,22 +1,12 @@
 package com.revo.myboard.post.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/*
- * Created By Revo
- */
-
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
+@Data
 public class CreateDTO {
 
     @NotNull
@@ -25,5 +15,4 @@ public class CreateDTO {
     private String title;
     @NotEmpty
     private String content;
-
 }

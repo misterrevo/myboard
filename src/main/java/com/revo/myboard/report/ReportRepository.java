@@ -6,14 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
 @Repository
-public interface ReportRepository extends JpaRepository<Report, Long> {
+interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query("FROM Report r where r.checked = false")
     List<Report> findByCheckedFalse();
-
 }

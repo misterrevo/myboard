@@ -9,15 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.util.Collection;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/*
- * Created By Revo
- */
-
 @Builder
-public class Details implements UserDetails {
+class Details implements UserDetails {
 
     @Serial
     private static final long serialVersionUID = 7502322939676542596L;
@@ -30,7 +25,7 @@ public class Details implements UserDetails {
     }
 
     private Collection<? extends GrantedAuthority> mapFromUser(Authority authority){
-        return Stream.of(authority).map(n -> new SimpleGrantedAuthority(ROLE_PREFIX + n)).collect(Collectors.toList());
+        return Stream.of(authority).map(n -> new SimpleGrantedAuthority(ROLE_PREFIX + n)).toList();
     }
 
     @Override
@@ -62,5 +57,4 @@ public class Details implements UserDetails {
     public boolean isEnabled() {
         return user.isActive();
     }
-
 }

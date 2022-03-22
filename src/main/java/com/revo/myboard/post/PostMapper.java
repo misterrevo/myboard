@@ -1,50 +1,58 @@
 package com.revo.myboard.post;
 
+import com.revo.myboard.comment.Comment;
 import com.revo.myboard.comment.CommentMapper;
+import com.revo.myboard.comment.dto.CommentDTO;
+import com.revo.myboard.like.Like;
 import com.revo.myboard.like.LikeMapper;
+import com.revo.myboard.like.dto.LikeDTO;
 import com.revo.myboard.post.dto.PostDTO;
 import com.revo.myboard.post.dto.ShortPostDTO;
+import com.revo.myboard.report.Report;
 import com.revo.myboard.report.ReportMapper;
+import com.revo.myboard.report.dto.ReportDTO;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
-/*
- * Created By Revo
- */
+import java.util.List;
 
 public final class PostMapper {
 
     public static PostDTO mapPostDTOFromPost(Post post) {
-        if(post.getComments() != null && post.getMyLikes() != null && post.getReports() != null){
-            return buildForPost(post);
-        }
-        return buildForNewPost(post);
+        return buildPostDTO(post);
     }
 
-    private static PostDTO buildForNewPost(Post post){
+    private static PostDTO buildPostDTO(Post post){
+        var category = post.getCategory();
+        var author = post.getAuthor();
         return PostDTO.builder()
                 .id(post.getId())
-                .category(post.getCategory().getId())
-                .comments(new ArrayList<>())
-                .content(post.getContent()).date(post.getDate()).lastEditDate(post.getLastEditDate())
-                .likes(new ArrayList<>())
-                .reports(new ArrayList<>())
-                .title(post.getTitle()).user(post.getAuthor().getLogin())
-                .build();
-    }
-
-    private static PostDTO buildForPost(Post post){
-        return PostDTO.builder()
-                .id(post.getId())
-                .category(post.getCategory().getId())
-                .comments(post.getComments().stream().map(CommentMapper::mapCommentDTOFromComment).collect(Collectors.toList()))
-                .content(post.getContent()).date(post.getDate()).lastEditDate(post.getLastEditDate())
-                .likes(post.getMyLikes().stream().map(LikeMapper::mapLikeDTOFromLike).collect(Collectors.toList()))
-                .reports(post.getReports().stream().map(ReportMapper::mapFromReport).collect(Collectors.toList()))
+                .category(category.getId())
+                .comments(mapFromComments(post.getComments()))
+                .content(post.getContent())
+                .date(post.getDate())
+                .lastEditDate(post.getLastEditDate())
+                .likes(mapFromLikes(post.getMyLikes()))
+                .reports(mapFromReports(post.getReports()))
                 .title(post.getTitle())
-                .user(post.getAuthor().getLogin())
+                .user(author.getLogin())
                 .build();
+    }
+
+    private static List<ReportDTO> mapFromReports(List<Report> reports) {
+        return reports.stream()
+                .map(ReportMapper::mapFromReport)
+                .toList();
+    }
+
+    private static List<LikeDTO> mapFromLikes(List<Like> myLikes) {
+        return myLikes.stream()
+                .map(LikeMapper::mapLikeDTOFromLike)
+                .toList();
+    }
+
+    private static List<CommentDTO> mapFromComments(List<Comment> comments) {
+        return comments.stream()
+                .map(CommentMapper::mapCommentDTOFromComment)
+                .toList();
     }
 
     public static ShortPostDTO mapShortPostDTOFromPost(Post post) {
@@ -52,13 +60,14 @@ public final class PostMapper {
     }
 
     private static ShortPostDTO buildShortPostDTO(Post post) {
+        var author = post.getAuthor();
+        var comments = post.getComments();
         return ShortPostDTO.builder()
                 .id(post.getId())
                 .lastActivity(post.getLastActiveDate())
                 .title(post.getTitle())
-                .author(post.getAuthor().getLogin())
-                .answers(post.getComments().size())
+                .author(author.getLogin())
+                .answers(comments.size())
                 .build();
     }
-
 }

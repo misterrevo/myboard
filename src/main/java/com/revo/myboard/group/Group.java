@@ -4,18 +4,12 @@ import lombok.*;
 
 import javax.persistence.*;
 
-/*
- * Created By Revo
- */
-
 @Entity
 @Table(name = "user_group")
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Group {
 
     @Id
@@ -25,5 +19,4 @@ public class Group {
     private String name;
     @Enumerated(EnumType.STRING)
     private Authority authority;
-
 }

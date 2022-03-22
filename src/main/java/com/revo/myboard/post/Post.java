@@ -10,16 +10,11 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,17 +30,19 @@ public final class Post {
     private String title;
     @Type(type = "text")
     private String content;
+    @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<Like> myLikes;
+    private List<Like> myLikes = new ArrayList<>();
     private LocalDateTime date;
     private LocalDateTime lastEditDate;
     private LocalDateTime lastActiveDate;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+    @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<Report> reports;
-
+    private List<Report> reports = new ArrayList<>();
 }

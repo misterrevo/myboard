@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration("cors")
 @EnableWebMvc
-public class Config implements WebMvcConfigurer {
+class Config implements WebMvcConfigurer {
 
     private static final String MAPPING_PATH = "/**";
     private static final String ALLOWED_ORIGINS = "*";
@@ -19,7 +19,11 @@ public class Config implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping(MAPPING_PATH).allowedOrigins(ALLOWED_ORIGINS).allowedHeaders(ALLOWED_HEADERS).exposedHeaders(EXPOSED_HEADERS).allowedMethods(ALLOWED_METHODS);
+        registry.addMapping(MAPPING_PATH)
+                .allowedOrigins(ALLOWED_ORIGINS)
+                .allowedHeaders(ALLOWED_HEADERS)
+                .exposedHeaders(EXPOSED_HEADERS)
+                .allowedMethods(ALLOWED_METHODS);
     }
 
     @Bean
@@ -28,5 +32,4 @@ public class Config implements WebMvcConfigurer {
         firewall.setAllowUrlEncodedDoubleSlash(true);
         return firewall;
     }
-
 }

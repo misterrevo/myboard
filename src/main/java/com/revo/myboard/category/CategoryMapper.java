@@ -2,33 +2,32 @@ package com.revo.myboard.category;
 
 import com.revo.myboard.category.dto.CategoryDTO;
 import com.revo.myboard.category.dto.ShortCategoryDTO;
+import com.revo.myboard.post.Post;
 import com.revo.myboard.post.PostMapper;
+import com.revo.myboard.post.dto.ShortPostDTO;
 
-import java.util.ArrayList;
+import java.util.List;
 
-/*
- * Created By Revo
- */
-
-public final class CategoryMapper {
+public class CategoryMapper {
 
     public static CategoryDTO mapCategoryDTOFromCategory(Category category) {
-        if(category.getPosts() != null){
-            return buildForCategory(category);
-        }
-        return buildForNewCategory(category);
+        return buildCategoryDTO(category);
     }
 
-    private static CategoryDTO buildForNewCategory(Category category){
-        return CategoryDTO.builder().id(category.getId()).name(category.getName())
-                .posts(new ArrayList<>())
-                .section(category.getSection().getId()).build();
+    private static CategoryDTO buildCategoryDTO(Category category){
+        var section = category.getSection();
+        return CategoryDTO.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .posts(mapFromList(category.getPosts()))
+                .section(section.getId())
+                .build();
     }
 
-    private static CategoryDTO buildForCategory(Category category){
-        return CategoryDTO.builder().id(category.getId()).name(category.getName())
-                .posts(category.getPosts().stream().map(PostMapper::mapShortPostDTOFromPost).toList())
-                .section(category.getSection().getId()).build();
+    private static List<ShortPostDTO> mapFromList(List<Post> posts) {
+        return posts.stream()
+                .map(PostMapper::mapShortPostDTOFromPost)
+                .toList();
     }
 
     public static ShortCategoryDTO mapShortCategoryDTOFromCategory(Category category) {
@@ -41,5 +40,4 @@ public final class CategoryMapper {
                 .name(category.getName())
                 .build();
     }
-
 }

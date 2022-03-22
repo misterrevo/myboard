@@ -1,22 +1,19 @@
 package com.revo.myboard.security;
 
+import com.revo.myboard.exception.UserNotExistsException;
 import com.revo.myboard.user.User;
-import com.revo.myboard.user.UserRepository;
+import com.revo.myboard.user.UserServiceApi;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-/*
- * Created By Revo
- */
-
 @Service
 @AllArgsConstructor
-public class DetailsService implements UserDetailsService {
+class DetailsService implements UserDetailsService {
 
-    private final UserRepository repository;
+    private final UserServiceApi userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,7 +25,10 @@ public class DetailsService implements UserDetailsService {
     }
 
     private User getUser(String username){
-        return repository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        try{
+            return userService.getUserByLogin(username);
+        } catch (UserNotExistsException exception){
+            throw new UsernameNotFoundException(username);
+        }
     }
-
 }

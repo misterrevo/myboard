@@ -8,15 +8,9 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
-
-/*
- * Created By Revo
- */
 
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,5 +32,4 @@ public final class Report {
     private LocalDateTime date;
     @Type(type = "text")
     private String content;
-
 }

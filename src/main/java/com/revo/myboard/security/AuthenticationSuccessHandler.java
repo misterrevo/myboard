@@ -11,12 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Date;
 
-/*
- * Created By Revo
- */
-
 @Component
-public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private static final String HEADER_NAME = "Authorization";
     private static final String HEADER_VALUE = "Bearer %s";
@@ -34,10 +30,10 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     }
 
     private String createToken(Authentication authentication){
+        var principal = authentication.getPrincipal();
         return JWT.create()
-                .withSubject(authentication.getPrincipal().toString())
+                .withSubject(principal.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(Algorithm.HMAC256(secret));
     }
-
 }

@@ -17,47 +17,48 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-/*
- *  Created By Revo
- */
-
 @RestController
 @RequestMapping("/posts")
 @Validated
 @AllArgsConstructor
-public class PostController {
+class PostController {
 
-    private static final String LOCATION = "/posts";
+    private static final String POST_LOCATION = "/posts";
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final PostService postService;
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getPostById(@PathVariable long id, HttpServletRequest request) {
-        return ResponseEntity.ok(postService.getPostDTOById(id));
+        var postDTO = postService.getPostDTOById(id);
+        return ResponseEntity.ok(postDTO);
     }
 
-    @GetMapping("/{title}/search")
-    public ResponseEntity<List<ShortPostDTO>> searchPostsByTitle(@PathVariable String title,
+    @GetMapping()
+    public ResponseEntity<List<ShortPostDTO>> searchPostsByTitle(@RequestParam String title,
                                                                    HttpServletRequest request) {
-        return ResponseEntity.ok(postService.searchPostsByTitle(title));
+        var postsDTO = postService.searchPostsByTitle(title);
+        return ResponseEntity.ok(postsDTO);
     }
 
     @GetMapping("/last-active")
     public ResponseEntity<List<ShortPostDTO>> getLastActivePosts(HttpServletRequest request) {
-        return ResponseEntity.ok(postService.getTenLastActivitedPosts());
+        var postsDTO = postService.getTenLastActivitedPosts();
+        return ResponseEntity.ok(postsDTO);
     }
 
     @GetMapping("/most-liked")
     public ResponseEntity<List<ShortPostDTO>> getMostLikedPosts(HttpServletRequest request) {
-        return ResponseEntity.ok(postService.getTenMostLikedPosts());
+        var postsDTO = postService.getTenMostLikedPosts();
+        return ResponseEntity.ok(postsDTO);
     }
 
     @PostMapping()
     @ForUser
     public ResponseEntity<PostDTO> createPost(@RequestHeader(AUTHORIZATION_HEADER) String token,
                                            @RequestBody @Valid CreateDTO createDTO, HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(postService.createPost(token, createDTO.getCategory(), createDTO.getTitle(), createDTO.getContent()));
+        var postDTO = postService.createPost(token, createDTO);
+        return ResponseEntity.created(URI.create(POST_LOCATION)).body(postDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -72,23 +73,23 @@ public class PostController {
     @ForUser
     public ResponseEntity<PostDTO> editPostById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long id,
                              @RequestBody @Valid EditDTO editDTO, HttpServletRequest request) {
-        var postDTO = postService.editPostById(token, id, editDTO.getTitle(), editDTO.getContent());
+        var postDTO = postService.editPostById(token, id, editDTO);
         return ResponseEntity.ok(postDTO);
     }
 
-    @PostMapping("/{id}/like")
+    @PatchMapping("/{id}/like")
     @ForUser
     public ResponseEntity<LikeDTO> giveLikeForPostById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long id,
                                                        HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(LOCATION)).body(postService.giveLikeForPostById(token, id));
+        var likeDTO = postService.giveLikeForPostById(token, id);
+        return ResponseEntity.ok(likeDTO);
     }
 
-    @DeleteMapping("/{id}/unlike")
+    @PatchMapping("/{id}/unlike")
     @ForUser
-    public ResponseEntity<Void> removeLikeFromPostById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long id,
+    public ResponseEntity<LikeDTO> removeLikeFromPostById(@RequestHeader(AUTHORIZATION_HEADER) String token, @PathVariable long id,
                                                          HttpServletRequest request) {
-        postService.removeLikeFromPostById(token, id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var likeDTO = postService.removeLikeFromPostById(token, id);
+        return ResponseEntity.ok(likeDTO);
     }
-
 }

@@ -1,24 +1,19 @@
 package com.revo.myboard.user.dto;
 
-import com.revo.myboard.user.Data;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
-/*
- * Created By Revo
- */
-
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
-public class DataDTO {
+public class DataDTO{
 
     @NotEmpty
     private String description;
@@ -30,5 +25,4 @@ public class DataDTO {
     @NotEmpty
     private String page;
     private String gender;
-
 }

@@ -13,13 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
-/*
- * Created By Revo
- */
-
 @Component
-public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private static final String PROCCESS_URL = "/login";
     private static final String AUTHENTICATION_EXCEPTION_MESSAGE = "Something went wrong while parsing /login request body";
@@ -54,5 +49,4 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private CredentialsDTO mapFromJson(HttpServletRequest request) throws IOException {
         return objectMapper.readValue(request.getInputStream(), CredentialsDTO.class);
     }
-
 }

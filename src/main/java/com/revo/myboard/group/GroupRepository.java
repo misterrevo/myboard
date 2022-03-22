@@ -5,15 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-/*
- * Created By Revo
- */
-
 @Repository
-public interface GroupRepository extends JpaRepository<Group, Long> {
+interface GroupRepository extends JpaRepository<Group, Long> {
 
     Optional<Group> findByName(String name);
 
     boolean existsByName(String name);
-
 }

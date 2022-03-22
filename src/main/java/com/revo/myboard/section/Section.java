@@ -4,15 +4,11 @@ import com.revo.myboard.category.Category;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Created By Revo
- */
-
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +19,7 @@ public class Section {
     private long id;
     @Column(unique = true)
     private String name;
+    @Builder.Default
     @OneToMany(mappedBy = "section", cascade = CascadeType.REMOVE)
-    private List<Category> categories;
-
+    private List<Category> categories = new ArrayList<>();
 }

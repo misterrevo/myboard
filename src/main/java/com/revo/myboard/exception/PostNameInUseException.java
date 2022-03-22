@@ -7,5 +7,4 @@ public class PostNameInUseException extends RuntimeException {
     public PostNameInUseException(String name) {
         super(MESSAGE.formatted(name));
     }
-
 }

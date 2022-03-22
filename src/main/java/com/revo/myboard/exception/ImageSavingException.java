@@ -7,5 +7,4 @@ public class ImageSavingException extends RuntimeException{
     public ImageSavingException(String name) {
         super(MESSAGE.formatted(name));
     }
-
 }

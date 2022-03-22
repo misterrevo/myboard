@@ -15,15 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/*
- * Created By Revo
- */
-
-public class TokenAuthorizationFilter extends BasicAuthenticationFilter {
+class TokenAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String EMPTY_STRING = "";
+    private static final String IMAGES_URI = "/images";
     private final UserDetailsService userDetailsService;
     private final String secret;
 
@@ -64,8 +61,9 @@ public class TokenAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private String getName(String token){
-        return JWT.require(Algorithm.HMAC256(secret)).build().verify(token.replace(TOKEN_PREFIX, EMPTY_STRING))
+        return JWT.require(Algorithm.HMAC256(secret))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, EMPTY_STRING))
                 .getSubject();
     }
-
 }

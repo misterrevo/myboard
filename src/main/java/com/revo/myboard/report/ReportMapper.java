@@ -1,9 +1,5 @@
 package com.revo.myboard.report;
 
-/*
- * Created By Revo
- */
-
 import com.revo.myboard.report.dto.ReportDTO;
 
 public final class ReportMapper {
@@ -17,10 +13,12 @@ public final class ReportMapper {
     }
 
     private static ReportDTO buildForComment(Report report){
+        var reporter = report.getReporter();
+        var comment = report.getComment();
         return ReportDTO.builder()
                 .id(report.getId())
-                .reporter(report.getReporter().getLogin())
-                .comment(report.getComment().getId())
+                .reporter(reporter.getLogin())
+                .comment(comment.getId())
                 .date(report.getDate())
                 .checked(report.isChecked())
                 .content(report.getContent())
@@ -28,14 +26,16 @@ public final class ReportMapper {
     }
 
     private static ReportDTO buildForPost(Report report){
+        var reporter = report.getReporter();
+        var post = report.getPost();
         return ReportDTO.builder()
                 .id(report.getId())
-                .reporter(report.getReporter().getLogin())
-                .postTitle(report.getPost().getTitle())
+                .reporter(reporter.getLogin())
+                .post(post.getId())
+                .postTitle(post.getTitle())
                 .date(report.getDate())
                 .checked(report.isChecked())
                 .content(report.getContent())
                 .build();
     }
-
 }

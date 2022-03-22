@@ -3,32 +3,37 @@ package com.revo.myboard.user;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.revo.myboard.email.EmailService;
-import com.revo.myboard.exception.*;
+import com.revo.myboard.exception.EmailInUseException;
+import com.revo.myboard.exception.LoginInUseException;
+import com.revo.myboard.exception.MatchPasswordException;
+import com.revo.myboard.exception.NoPermissionException;
+import com.revo.myboard.exception.SameAccessStatusException;
+import com.revo.myboard.exception.UserIsActiveException;
+import com.revo.myboard.exception.UserNotExistsException;
 import com.revo.myboard.group.Authority;
 import com.revo.myboard.group.Group;
-import com.revo.myboard.group.GroupService;
+import com.revo.myboard.group.GroupServiceApi;
+import com.revo.myboard.security.dto.RegisterDTO;
+import com.revo.myboard.user.dto.DataDTO;
 import com.revo.myboard.user.dto.ProfileDTO;
 import com.revo.myboard.user.dto.SearchDTO;
 import com.revo.myboard.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
-/*
- * Created By Revo
- */
 
 @Service
 @Transactional
-@RequiredArgsConstructor
-public class UserService {
+@RequiredArgsConstructor(onConstructor = @__(@Lazy))
+class UserService implements UserServiceApi {
 
     private static final String CITY = "Brak";
     private static final String DESCRIPTION = "Brak";
@@ -39,24 +44,37 @@ public class UserService {
     private final UserRepository repository;
     private final BCryptPasswordEncoder encoder;
     private final EmailService emailService;
-    private final GroupService groupService;
+    private final GroupServiceApi groupService;
     @Value("${spring.security.jwt.secret}")
     private String secret;
 
-    public UserDTO registerUser(String login, String password, String email) {
+    @Override
+    public List<User> getAll(){
+        return repository.findAll();
+    }
+
+    @Override
+    public UserDTO registerUser(RegisterDTO registerDTO) {
+        var email = registerDTO.getEmail();
         if (existsByEmail(email)) {
             throw new EmailInUseException(email);
         }
+        var login = registerDTO.getLogin();
         if (existsByLogin(login)) {
             throw new LoginInUseException(login);
         }
+        var password = registerDTO.getPassword();
         var code = getCode();
-        while (repository.findByCode(code).isPresent()) {
+        while (codeIsInUse(code)) {
             code = getCode();
         }
         emailService.sendActiavtionLink(email, code);
         var user = repository.save(buildUser(login, password, email, code));
         return mapFromUser(user);
+    }
+
+    private boolean codeIsInUse(String code) {
+        return repository.existsByCode(code);
     }
 
     private String getCode(){
@@ -87,13 +105,14 @@ public class UserService {
                 .build();
     }
 
+    @Override
     public UserDTO resendActivationCode(String email) {
         var user = getUserByEmail(email);
         if (user.isActive()) {
             throw new UserIsActiveException(email);
         }
         var code = getCode();
-        while (repository.findByCode(code).isPresent()) {
+        while (codeIsInUse(code)) {
             code = getCode();
         }
         user.setCode(code);
@@ -111,7 +130,9 @@ public class UserService {
     }
 
     private List<SearchDTO> mapFromList(List<User> users){
-        return users.stream().map(this::mapFromUserAsSearch).collect(Collectors.toList());
+        return users.stream()
+                .map(this::mapFromUserAsSearch)
+                .toList();
     }
 
     private SearchDTO mapFromUserAsSearch(User user){
@@ -122,6 +143,7 @@ public class UserService {
         return repository.findByLoginContaining(login);
     }
 
+    @Override
     public UserDTO activeUserByCode(String code) {
         var user = findByCode(code);
         if (user.isActive()) {
@@ -132,18 +154,23 @@ public class UserService {
     }
 
     private User findByCode(String code){
-        return repository.findByCode(code).orElseThrow(() -> new UserNotExistsException(code));
+        return repository.findByCode(code)
+                .orElseThrow(() -> new UserNotExistsException(code));
     }
 
+    @Override
     public User currentLoggedUser(String token) {
         return getUserByLogin(getName(token));
     }
 
     private String getName(String token){
-        return JWT.require(Algorithm.HMAC256(secret)).build().verify(token.replace(TOKEN_PREFIX, TOKEN_REPLACEMENT)).getSubject();
+        return JWT.require(Algorithm.HMAC256(secret))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, TOKEN_REPLACEMENT))
+                .getSubject();
     }
 
-    public ProfileDTO currentLoggedUserProfileDTO(String token) {
+    ProfileDTO currentLoggedUserProfileDTO(String token) {
         var user = currentLoggedUser(token);
         return mapFromUserAsProfile(user);
     }
@@ -152,8 +179,10 @@ public class UserService {
         return UserMapper.mapProfileDTOFromUser(user);
     }
 
+    @Override
     public User getUserByLogin(String login) {
-        return repository.findByLogin(login).orElseThrow(() -> new UserNotExistsException(login));
+        return repository.findByLogin(login)
+                .orElseThrow(() -> new UserNotExistsException(login));
     }
 
     UserDTO getUserDTOByLogin(String login){
@@ -187,14 +216,15 @@ public class UserService {
         return mapFromUser(user);
     }
 
-    UserDTO changeUserData(String token, String description, int age, String city, String page, String sex) {
+    UserDTO changeUserData(String token, DataDTO dataDTO) {
         var user = currentLoggedUser(token);
         var data = user.getData();
-        data.setDescription(description);
-        data.setAge(age);
-        data.setCity(city);
-        data.setPage(page);
-        data.setGender(Gender.valueOf(sex.toUpperCase()));
+        var gender = dataDTO.getGender();
+        data.setDescription(dataDTO.getDescription());
+        data.setAge(dataDTO.getAge());
+        data.setCity(dataDTO.getCity());
+        data.setPage(dataDTO.getPage());
+        data.setGender(Gender.valueOf(gender.toUpperCase()));
         return mapFromUser(user);
     }
 
@@ -217,20 +247,32 @@ public class UserService {
     void deleteUserByLogin(String token, String login) {
         var user = currentLoggedUser(token);
         var userTarget = getUserByLogin(login);
-        if (!user.getGroup().getAuthority().equals(Authority.ADMIN) && !user.equals(userTarget)) {
+        if (!hasAdminRole(user) && !isSameUser(user, userTarget)) {
             throw new NoPermissionException(login);
         }
         repository.delete(userTarget);
     }
 
-    List<String> getSexList() {
+    private boolean isSameUser(User user, User userTarget) {
+        return Objects.equals(user, userTarget);
+    }
+
+    private boolean hasAdminRole(User user) {
+        var group = user.getGroup();
+        return Objects.equals(group.getAuthority(), Authority.ADMIN);
+    }
+
+    List<String> getGenderList() {
         return mapFromList();
     }
 
     private List<String> mapFromList(){
-        return Arrays.stream(Gender.values()).map(Enum::toString).collect(Collectors.toList());
+        return Arrays.stream(Gender.values())
+                .map(Enum::toString)
+                .toList();
     }
 
+    @Override
     public UserDTO activeByLogin(String login) {
         var user = getUserByLogin(login);
         if (user.isActive()) {
@@ -243,5 +285,4 @@ public class UserService {
     private UserDTO mapFromUser(User user){
         return UserMapper.mapUserDTOFromUser(user);
     }
-
 }

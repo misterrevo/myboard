@@ -1,6 +1,6 @@
 # myboard
 
-Projekt forum internetowego,
+Projekt forum internetowego, <br>
 Użytkownicy mogą tworzyć konta, 
 pisać posty, komentować i lajkować je.
 Moderatorzy mogą usuwać posty i komentarze, 

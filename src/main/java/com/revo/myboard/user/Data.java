@@ -16,7 +16,6 @@ import javax.persistence.Enumerated;
 @AllArgsConstructor
 class Data {
 
-    @Type(type = "text")
     private String description;
     private int age;
     private String city;

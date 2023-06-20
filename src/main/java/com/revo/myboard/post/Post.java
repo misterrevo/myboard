@@ -18,17 +18,17 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "posts")
 public final class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
-    private long id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
     private String title;
-    @Type(type = "text")
     private String content;
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)

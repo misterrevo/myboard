@@ -17,15 +17,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "comments")
 public final class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
-    @Type(type = "text")
+
     private String content;
     @Builder.Default
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)

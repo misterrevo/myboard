@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_group")
+@Table(name = "groups")
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,7 +14,7 @@ public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(unique = true)
     private String name;
     @Enumerated(EnumType.STRING)

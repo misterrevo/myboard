@@ -14,11 +14,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "reports")
 public final class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id")
     private User reporter;
@@ -30,6 +31,5 @@ public final class Report {
     private Comment comment;
     private boolean checked;
     private LocalDateTime date;
-    @Type(type = "text")
     private String content;
 }
